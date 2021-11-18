@@ -1,5 +1,7 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
+app.use(cookieParser());
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 const PORT = 8080;
@@ -36,15 +38,15 @@ app.post("/urls/:shortURL/edit", (req, res) => {
   res.redirect(`/urls/${shortURL}`)
 })
 
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect("/urls");
+})
+
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.newURL;
   res.redirect("/urls")
 });
-
-app.post("/urls/:shortURL/edit", (req, res) => {
-  const shortURL = req.params.shortURL;
-  res.redirect(`/urls/${shortURL}`)
-})
 
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
