@@ -3,7 +3,6 @@ const cookieParser = require("cookie-parser");
 const app = express();
 app.use(cookieParser());
 const bodyParser = require("body-parser");
-const { tempConverter } = require("../../exam-assessment-2/assessment-exam-student/answers/00");
 app.use(bodyParser.urlencoded({extended: true}));
 const PORT = 8080;
 
@@ -40,6 +39,18 @@ app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`)
+});
+
+app.post("/register", (req, res) => {
+  const userID = "user" + generateRandomString();
+  users[userID] = {
+    id : userID,
+    email: req.body.email,
+    password: req.body.password
+  };
+  res.cookie('user_id', userID);
+  console.log(users);
+  res.redirect("/urls");
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
