@@ -66,12 +66,16 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: req.body.password
   };
-  res.redirect("/urls");
+  res.redirect("/register");
 });
 
-app.post("/login", (req, res) => {
-  res.cookie('user_id', req.body.username); //cookie is undefined
+app.post("/register/page", (req, res) => {
   res.redirect("/register");
+})
+
+app.post("/login", (req, res) => {
+  res.cookie('user_id', req.body.email);
+  res.redirect("/login");
 })
 
 app.post("/urls/:shortURL/delete", (req, res) => {
