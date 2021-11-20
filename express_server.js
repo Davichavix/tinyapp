@@ -35,6 +35,16 @@ function generateRandomString() {
   return randStr;
 };
 
+const checkEmail = function(userObj, email) {
+  let userNames = Object.keys(userObj);
+  for (const user of userNames) {
+    if (userObj[user]["email"] === email) {
+      return true;
+    }
+  }
+  return false;
+};
+
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
@@ -45,6 +55,10 @@ app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
     res.sendStatus(400).end();
   };
+  if (checkEmail(users, req.body.email)) {
+    res.sendStatus(400).end();
+  };
+  console.log(users);
   const userID = "user" + generateRandomString();
   res.cookie('user_id', userID);
   users[userID] = {
@@ -52,7 +66,6 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: req.body.password
   };
-  console.log(users);
   res.redirect("/urls");
 });
 
