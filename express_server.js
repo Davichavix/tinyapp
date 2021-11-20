@@ -42,6 +42,9 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  if (req.body.email === "" || req.body.password === "") {
+    res.sendStatus(400).end();
+  };
   const userID = "user" + generateRandomString();
   res.cookie('user_id', userID);
   users[userID] = {
