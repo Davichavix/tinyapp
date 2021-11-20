@@ -70,8 +70,8 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie('user_id', req.body.username);
-  res.redirect("/urls");
+  res.cookie('user_id', req.body.username); //cookie is undefined
+  res.redirect("/register");
 })
 
 app.post("/urls/:shortURL/delete", (req, res) => {
