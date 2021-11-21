@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 const bcrypt = require("bcrypt");
 const PORT = 8080;
+const {getUserByEmail} = require("./helpers");
 
 app.set("view engine", "ejs");
 
@@ -40,16 +41,6 @@ function generateRandomString() {
   return randStr;
 };
 
-const checkEmail = function(userObj, email) {
-  let userNames = Object.keys(userObj);
-  for (const user of userNames) {
-    if (userObj[user]["email"] === email) {
-      return userObj[user]["id"];
-    }
-  }
-  return false;
-};
-
 const urlsForUser = function(urlObj, id) {
   let resObj = {};
   for (const short in urlObj) {
@@ -76,7 +67,7 @@ app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
     res.sendStatus(400).end();
   };
-  if (checkEmail(users, req.body.email)) {
+  if (getUserByEmail(req.body.email, users)) {
     res.sendStatus(400).end();
   };
   const userID = "user" + generateRandomString();
@@ -92,7 +83,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const userID = checkEmail(users, req.body.email);
+  const userID = getUserByEmail(req.body.email, users);
   if (userID && bcrypt.compareSync(req.body.password, users[userID]["password"])) {
   req.session.user_id = userID;
   res.redirect("/urls");
