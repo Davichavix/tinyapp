@@ -39,7 +39,7 @@ const checkEmail = function(userObj, email) {
   let userNames = Object.keys(userObj);
   for (const user of userNames) {
     if (userObj[user]["email"] === email) {
-      return true;
+      return userObj[user]["id"];
     }
   }
   return false;
@@ -69,12 +69,17 @@ app.post("/register", (req, res) => {
   res.redirect("/register");
 });
 
+app.post("/login", (req, res) => {
+  const userID = checkEmail(users, req.body.email);
+  res.cookie('user_id', userID);
+  res.redirect("/urls");
+})
+
 app.post("/register/page", (req, res) => {
   res.redirect("/register");
 })
 
-app.post("/login", (req, res) => {
-  res.cookie('user_id', req.body.email);
+app.post("/login/page", (req, res) => {
   res.redirect("/login");
 })
 
@@ -87,7 +92,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
   const shortURL = req.params.shortURL;
   res.redirect(`/urls/${shortURL}`)
 })
-
+ 
 
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
