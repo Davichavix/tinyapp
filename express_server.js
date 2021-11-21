@@ -45,6 +45,19 @@ const checkEmail = function(userObj, email) {
   return false;
 };
 
+const urlsForUser = function(urlObj, id) {
+  let resObj = {};
+  for (const short in urlObj) {
+    if (urlObj[short]["userID"] === id) {
+      resObj[short] = {
+        longURL: urlObj[short]["longURL"],
+        userID: urlObj[short]["userID"]
+      }
+    }
+  }
+  return resObj;
+};
+
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = {
