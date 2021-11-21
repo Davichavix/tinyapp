@@ -133,10 +133,14 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   const userID = req.cookies["user_id"];
+  if (userID) {
   const templateVars = { 
     username: users[userID],
    };
   res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
