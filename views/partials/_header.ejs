@@ -12,20 +12,14 @@
     </div>
     <div class="navbar-nav">
     <% if (!username) { %>
-      <form class="form-inline justify-content-end" action="/register/page" method="POST">
-        <div class="form-group mb-2">
-          <label for="username"></label>
-          <button type="submit" class="btn btn-outline-dark">Register</button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href="/login">Login</a>
+          <a class="nav-item nav-link" href="/register">Register</a>
         </div>
-      </form>
-        <form class="form-inline justify-content-end" action="/login/page" method="POST">
-          <div class="form-group mb-2">
-            <label for="username"></label>
-            <button type="submit" class="btn btn-outline-dark">Login</button>
-          </div>
-        </form>
+      </div>
         <% } else { %>
-          <p>Logged in As: <%= username.email %>!</p>
+          <p style="margin-right: 0.5em;">Logged in As: <%= username.email %>!</p>
           <form class="form-inline justify-content-center" action="/logout" method="POST">
             <div class="form-group mb-2">
               <button type="submit" class="btn btn-outline-dark">Logout</button>

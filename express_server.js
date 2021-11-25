@@ -65,10 +65,10 @@ app.post("/urls", (req, res) => {
 
 app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
-    res.sendStatus(400).end();
+    return res.status(400).send("Bad Request");
   };
   if (getUserByEmail(req.body.email, users)) {
-    res.sendStatus(400).end();
+    return res.status(400).send("Bad Request");
   };
   const userID = "user" + generateRandomString();
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
@@ -118,7 +118,6 @@ app.post("/urls/:shortURL/edit", (req, res) => {
   }
 })
  
-
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/urls");
