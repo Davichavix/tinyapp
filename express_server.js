@@ -65,10 +65,10 @@ app.post("/urls", (req, res) => {
 
 app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
-    return res.status(400).send("Bad Request");
+    return res.status(400).send("Username/Password cannot be blank");
   };
   if (getUserByEmail(req.body.email, users)) {
-    return res.status(400).send("Bad Request");
+    return res.status(400).send("User already exists");
   };
   const userID = "user" + generateRandomString();
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
