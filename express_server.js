@@ -10,35 +10,12 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 const bcrypt = require("bcrypt");
 const PORT = 8080;
-const {getUserByEmail} = require("./helpers");
+const {getUserByEmail, generateRandomString, urlsForUser} = require("./helpers");
 
 app.set("view engine", "ejs");
 
 const urlDatabase = {};
-
 const users = {};
-
-const generateRandomString = function() {
-  let randStr = "";
-  const randChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 6; i++) {
-    randStr = randStr + randChars[Math.floor(Math.random() * 61) + 1];
-  }
-  return randStr;
-};
-
-const urlsForUser = function(urlObj, id) {
-  let resObj = {};
-  for (const short in urlObj) {
-    if (urlObj[short]["userID"] === id) {
-      resObj[short] = {
-        longURL: urlObj[short]["longURL"],
-        userID: urlObj[short]["userID"]
-      };
-    }
-  }
-  return resObj;
-};
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
