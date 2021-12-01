@@ -169,3 +169,7 @@ app.listen(PORT, () => {
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
+
+app.get("/", (req, res) => {
+  res.send("Home");
+});
