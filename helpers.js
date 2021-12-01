@@ -17,6 +17,7 @@ const generateRandomString = function() {
   return randStr;
 };
 
+// Function returns only urls based on email
 const urlsForUser = function(urlObj, id) {
   let resObj = {};
   for (const short in urlObj) {

@@ -26,6 +26,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+// Registers new User and return error if username/password blank
 app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send("Username/Password cannot be blank");
@@ -33,7 +34,10 @@ app.post("/register", (req, res) => {
   if (getUserByEmail(req.body.email, users)) {
     return res.status(400).send("User already exists");
   }
+
+  // Generates random UserID for new users
   const userID = "user" + generateRandomString();
+
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   req.session.user_id = userID;
   users[userID] = {
@@ -41,54 +45,70 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: hashedPassword
   };
-  console.log(users[userID]);
   res.redirect("/register");
 });
 
+// Login if username and password match registered user
 app.post("/login", (req, res) => {
+
+  // Get userID based on Email
   const userID = getUserByEmail(req.body.email, users);
+
   if (userID && bcrypt.compareSync(req.body.password, users[userID]["password"])) {
     req.session.user_id = userID;
     res.redirect("/urls");
-  } else {
-    return res.status(400).send("Password is Incorrect");
+  } else if (!userID) {
+    return res.status(400).send("Username not found");
+  } else if (!bcrypt.compareSync(req.body.password, users[userID]["password"])) {
+    return res.status(400).send("Password is incorrect");
   }
+});
+
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect("/urls");
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const userID = req.session.user_id;
+
+  // Only logged in user can delete user's own urls
   if (userID === urlDatabase[req.params.shortURL]["userID"]) {
     delete urlDatabase[req.params.shortURL];
+  } else {
+    return res.status(400).send("Must be logged in to delete urls");
   }
-  res.redirect("/urls");
 });
 
+//POST edit for existing shortURLs
 app.post("/urls/:shortURL/edit", (req, res) => {
   const userID = req.session.user_id;
   if (userID === urlDatabase[req.params.shortURL]["userID"]) {
     const shortURL = req.params.shortURL;
     res.redirect(`/urls/${shortURL}`);
   } else {
-    res.redirect("/urls");
+    return res.status(400).send("Must be logged in to edit urls");
   }
 });
  
-app.post("/logout", (req, res) => {
-  req.session = null;
-  res.redirect("/urls");
-});
-
+// Generates new longURL to existing shortURL
 app.post("/urls/:id", (req, res) => {
   const userID = req.session.user_id;
+
+  // Only logged in user can edit user's own urls
   if (userID === urlDatabase[req.params.id]["userID"]) {
     urlDatabase[req.params.id]["longURL"] = req.body.newURL;
   }
   res.redirect("/urls");
 });
 
+// GET view for shortURLs and longURLS
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
+
+  // Users can only view urls registered to logged in user
   const userURLs = urlsForUser(urlDatabase, userID);
+  
   const templateVars = {
     username: users[userID],
     urls: userURLs
@@ -114,6 +134,7 @@ app.get("/login", (req, res) => {
   res.render("login", templateVars);
 });
 
+// GET /urls/new page if userID logged in else redirects to login page
 app.get("/urls/new", (req, res) => {
   const userID = req.session.user_id;
   if (userID) {
