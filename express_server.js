@@ -45,7 +45,7 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: hashedPassword
   };
-  res.redirect("/register");
+  res.redirect("/urls");
 });
 
 // Login if username and password match registered user
