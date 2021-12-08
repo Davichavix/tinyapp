@@ -162,9 +162,6 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
-});
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
@@ -172,4 +169,8 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("Home");
+});
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
 });
