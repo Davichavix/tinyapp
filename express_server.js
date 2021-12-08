@@ -71,13 +71,13 @@ app.post("/logout", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const userID = req.session.user_id;
-
   // Only logged in user can delete user's own urls
   if (userID === urlDatabase[req.params.shortURL]["userID"]) {
     delete urlDatabase[req.params.shortURL];
   } else {
     return res.status(400).send("Must be logged in to delete urls");
   }
+  return res.redirect("/urls");
 });
 
 //POST edit for existing shortURLs
