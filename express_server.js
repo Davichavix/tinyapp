@@ -83,17 +83,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     return res.status(400).send("Must be logged in to delete urls");
   }
 });
-
-//POST edit for existing shortURLs
-app.post("/urls/:shortURL/edit", (req, res) => {
-  const userID = req.session.user_id;
-  if (userID === urlDatabase[req.params.shortURL]["userID"]) {
-    const shortURL = req.params.shortURL;
-    res.redirect(`/urls/${shortURL}`);
-  } else {
-    return res.status(400).send("Must be logged in to edit urls");
-  }
-});
  
 // Generates new longURL to existing shortURL
 app.post("/urls/:id", (req, res) => {
@@ -102,8 +91,10 @@ app.post("/urls/:id", (req, res) => {
   // Only logged in user can edit user's own urls
   if (userID === urlDatabase[req.params.id]["userID"]) {
     urlDatabase[req.params.id]["longURL"] = req.body.newURL;
+    res.redirect("/urls");
+  } else {
+    return res.status(400).send("Must be logged in to edit urls");
   }
-  res.redirect("/urls");
 });
 
 // GET view for shortURLs and longURLS

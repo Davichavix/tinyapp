@@ -26,11 +26,9 @@
           <tr>
             <td><%= url %></td>
             <td><%= urls[url]["longURL"] %></td>
-            <form method="POST" action="/urls/<%= url %>/edit">
-              <td><button type="submit" class="btn btn-outline-primary">Edit</button></td>
-              </form>
+              <td><a href="/urls/<%= url %>" class="btn btn-outline-primary">Edit</a></td>
             <form method="POST" action="/urls/<%= url %>/delete">
-            <td><button type="submit" class="btn btn-outline-danger">Delete</button></td>
+              <td><button type="submit" class="btn btn-outline-danger">Delete</button></td>
             </form>
           </tr>
         <% } %>
