@@ -142,20 +142,23 @@ app.get("/urls/new", (req, res) => {
     const templateVars = {
       username: users[userID],
     };
-   res.render("urls_new", templateVars);
+    return res.render("urls_new", templateVars);
   } else {
-    res.redirect("/login");
+    return res.redirect("/login");
   }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const userID = req.session.user_id;
+  if (users[userID]) {
   const templateVars = {
     username: users[userID],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]["longURL"],
   };
-  res.render("urls_show", templateVars);
+    return res.render("urls_show", templateVars);
+  }
+    return res.status(400).send("Must be logged in to edit urls");
 });
 
 app.get("/u/:shortURL", (req, res) => {
