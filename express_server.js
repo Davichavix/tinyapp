@@ -147,10 +147,14 @@ app.get("/login", (req, res) => {
 // GET /urls/new page if userID logged in else redirects to login page
 app.get("/urls/new", (req, res) => {
   const userID = req.session.user_id;
+  if (users[userID]) {
     const templateVars = {
       username: users[userID],
     };
-    res.render("urls_new", templateVars);
+   res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
