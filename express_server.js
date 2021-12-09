@@ -110,7 +110,7 @@ app.post("/urls/:id", (req, res) => {
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
   if (!users[userID]) {
-    return res.redirect("/login");
+    return res.redirect("/urls/new");
   }
   // Users can only view urls registered to logged in user
   const userURLs = urlsForUser(urlDatabase, userID);
@@ -134,7 +134,7 @@ app.get("/register", (req, res) => {
 app.get("/login", (req, res) => {
   const userID = req.session.user_id;
   if (users[userID]) {
-    return res.redirect("/urls")
+    return res.redirect("/urls/new")
   } else {
   const templateVars = {
     username: users[userID],
@@ -147,14 +147,10 @@ app.get("/login", (req, res) => {
 // GET /urls/new page if userID logged in else redirects to login page
 app.get("/urls/new", (req, res) => {
   const userID = req.session.user_id;
-  if (users[userID]) {
     const templateVars = {
       username: users[userID],
     };
     res.render("urls_new", templateVars);
-  } else {
-    res.redirect("/login");
-  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -178,7 +174,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  res.redirect("/urls/new");
 });
 
 app.listen(PORT, () => {
