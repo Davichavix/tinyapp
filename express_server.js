@@ -18,12 +18,16 @@ const urlDatabase = {};
 const users = {};
 
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = {
-    longURL : req.body.longURL,
-    userID : req.session.user_id
-  };
-  res.redirect(`/urls/${shortURL}`);
+  const userID = req.session.user_id;
+  if (users[userID]) {
+    const shortURL = generateRandomString();
+    urlDatabase[shortURL] = {
+      longURL : req.body.longURL,
+      userID : req.session.user_id
+    };
+    return res.redirect(`/urls/${shortURL}`);
+  }
+  return res.status(400).send("Please Login");
 });
 
 // Registers new User and return error if username/password blank
@@ -105,7 +109,9 @@ app.post("/urls/:id", (req, res) => {
 // GET view for shortURLs and longURLS
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
-
+  if (!users[userID]) {
+    return res.redirect("/login");
+  }
   // Users can only view urls registered to logged in user
   const userURLs = urlsForUser(urlDatabase, userID);
   
@@ -127,17 +133,21 @@ app.get("/register", (req, res) => {
 
 app.get("/login", (req, res) => {
   const userID = req.session.user_id;
+  if (users[userID]) {
+    return res.redirect("/urls")
+  } else {
   const templateVars = {
     username: users[userID],
     urls: urlDatabase
   };
   res.render("login", templateVars);
+  }
 });
 
 // GET /urls/new page if userID logged in else redirects to login page
 app.get("/urls/new", (req, res) => {
   const userID = req.session.user_id;
-  if (userID) {
+  if (users[userID]) {
     const templateVars = {
       username: users[userID],
     };
@@ -168,7 +178,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Home");
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
