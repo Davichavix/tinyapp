@@ -150,7 +150,10 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const userID = req.session.user_id;
-  if (users[userID]) {
+  if (!users[userID]) {
+    return res.status(400).send("Must be logged in to edit urls");
+  }
+  if (userID === urlDatabase[req.params.shortURL]["userID"]) {
   const templateVars = {
     username: users[userID],
     shortURL: req.params.shortURL,
@@ -158,7 +161,7 @@ app.get("/urls/:shortURL", (req, res) => {
   };
     return res.render("urls_show", templateVars);
   }
-    return res.status(400).send("Must be logged in to edit urls");
+    return res.status(400).send("Cannot edit other users urls");
 });
 
 app.get("/u/:shortURL", (req, res) => {
